@@ -1,11 +1,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Look at Boundary: A Boundary-Aware Face Alignment Algorithm</title>
+<title>FAB: A Robust Facial Landmark Detection Framework for Motion-Blurred Videos</title>
 
 <!-- Meta tags for search engines to crawl -->
 <meta name="robots" content="index,follow">
-<meta name="description" content="We present a novel boundary-aware face alignment algorithm by utilising boundary lines as the geometric structure of a human face to help facial landmark localisation. Unlike the conventional heatmap based method and regression based method, our approach derives face landmarks from boundary lines which remove the ambiguities in the landmark definition. Three questions are explored and answered by this work: 1. Why using boundary? 2. How to use boundary? 3. What is the relationship between boundary estimation and landmarks localisation? Our boundary-aware face alignment algorithm achieves 3.49% mean error on 300-W Fullset, which outperforms state-of-the-art methods by a large margin. Our method can also easily integrate information from other datasets. By utilising boundary information of 300-W dataset, our method achieves 3.92% mean error with 0.39% failure rate on COFW dataset, and 1.25% mean error on AFLW-Full dataset. Moreover, we propose a new dataset WFLW to unify training and testing across different factors, including poses, expressions, illuminations, makeups, occlusions, and blurriness.">
-<meta name="keywords" content="LAB; WFLW; wider facial landmarks in-the-wild; facial landmark detection; face alignment; face attributes; deep learning; Convolutional network; computer vision;">
+<meta name="description" content="We introduced an important but omitted issue, the facial landmark detection in motion-blurred videos. We believe further research on this field is of great significance. We proposed a novel framework, in which the three components work as an organic whole. The face boundary yielded by the structure predictor assists the deblurring module to relieve the motion blur. And the deblurred face leads to more accurate facial landmarks. There is still a lot of room for improvement for the extreme motion blur of the proposed RWMB dataset. We hope to see further development of this work in the future.">
+<meta name="keywords" content="FAB; RWMB; Real-World Motion Blur; facial landmark detection in motion-blurred videos; face alignment; motion blur; deep learning; Convolutional network; computer vision;">
 <link rel="author" href="http://keqiangsun.github.io/">
 
 <!-- Fonts and stuff -->
@@ -23,21 +23,24 @@
     <div id="content-inner">
       
       <div class="section head">
-	<h1><font size="5">Look at Boundary: A Boundary-Aware Face Alignment Algorithm</font></h1>
+	<h1><font size="5">FAB: A Robust Facial Landmark Detection Framework for Motion-Blurred Videos</font></h1>
 
 	<div class="authors">
-	  <a href="http://keqiangsun.github.io/">Keqiang Sun</a><sup>1,2</sup>&nbsp;&nbsp;
-	  <a href="">Chen Qian</a><sup>2</sup>&nbsp;&nbsp;
-	  <a href="http://shuoyang1213.me/">Shuo Yang</a><sup>3</sup>&nbsp;&nbsp;
-	  <a href="">Quan Wang</a><sup>2</sup>&nbsp;&nbsp;
-	  <a href="">Yici Cai</a><sup>1</sup>&nbsp;&nbsp;
-	  <a href="">Qiang Zhou</a><sup>1</sup>
+		<a href="http://keqiangsun.github.io/">Keqiang Sun</a><sup>1,2</sup>&nbsp;&nbsp;
+		<a href="http://wuwy.github.io/">Wayne Wu</a><sup>2</sup>&nbsp;&nbsp;
+	  <a href="">Tinghao Liu</a><sup>3</sup>&nbsp;&nbsp;
+	  <a href="http://shuoyang1213.me/">Shuo Yang</a><sup>4</sup>&nbsp;&nbsp;
+		<a href="">Quan Wang</a><sup>3</sup>&nbsp;&nbsp;
+		<a href="">Qiang Zhou</a><sup>2</sup>&nbsp;&nbsp;
+	  <a href="">Chen Qian</a><sup>1</sup>&nbsp;&nbsp;
+	  <a href="">Zuochang Ye</a><sup>3</sup>
 	</div>
 
 	<div class="affiliations">
+			<sup>1</sup><a href="http://www.ime.tsinghua.edu.cn/publish/ime/5886/index.html">Institute of Microelectronics<br>Tsinghua University<br></a>
 	  <sup>1</sup><a href="http://www.sist.tsinghua.edu.cn/docinfo_eng/index.jsp">Tsinghua National Laboratory for Information Science and Technology (TNList),<br>Department of Computer Science and Technology, Tsinghua University<br></a>
 	  <sup>2</sup><a href="https://www.sensetime.com/?lang=en-us">SenseTime Research<br></a>
-	  <sup>3</sup><a href="https://aws.amazon.com/cn/rekognition/">Amazon Rekognition</a>
+	  <sup>4</sup><a href="https://aws.amazon.com/cn/rekognition/">Amazon Rekognition</a>
 	</div>
 	<ul id="tabs">
 		<li><a href="https://keqiangsun.github.io/projects/FAB/FAB.html" name="#tab1">FAB</a></li>
@@ -53,22 +56,17 @@
       <div class="section abstract">
 	<h2>Abstract</h2>
 	<p>
-We present a novel boundary-aware face alignment algorithm by utilising 
-boundary lines as the geometric structure of a human face to help facial
- landmark localisation. Unlike the conventional heatmap based method and
- regression based method, our approach derives face landmarks from 
-boundary lines which remove the ambiguities in the landmark definition. 
-Three questions are explored and answered by this work: 1. Why using 
-boundary? 2. How to use boundary? 3. What is the relationship between 
-boundary estimation and landmarks localisation? Our boundary-aware face 
-alignment algorithm achieves 3.49% mean error on 300-W Fullset, which 
-outperforms state-of-the-art methods by a large margin. Our method can 
-also easily integrate information from other datasets. By utilising 
-boundary information of 300-W dataset, our method achieves 3.92% mean 
-error with 0.39% failure rate on COFW dataset, and 1.25% mean error on 
-AFLW-Full dataset. Moreover, we propose a new dataset WFLW to unify 
-training and testing across different factors, including poses, 
-expressions, illuminations, makeups, occlusions, and blurriness.
+			Recently, facial landmark detection algorithms have achieved remarkable performance on static images.
+			However, these algorithms are neither accurate nor stable in motion-blurred videos. 
+			The missing of structure information makes it difficult for state-of-the-art facial landmark detection algorithms to yield good results.
+			In this paper, we propose a framework named FAB that takes advantage of structure consistency in the temporal dimension for facial landmark detection in motion-blurred videos.
+			A structure predictor is proposed to predict the missing face structural information temporally, which serves as a geometry prior. 
+			This allows our framework to work as a virtuous circle. 
+			On one hand, the geometry prior helps our structure-aware deblurring network generates high quality deblurred images which lead to better landmark detection results. 
+			On the other hand, better landmark detection results help structure predictor generate better geometry prior for the next frame.
+			Moreover, it is a flexible video-based framework that can incorporate any static image-based methods to provide a performance boost on video datasets. 
+			Extensive experiments on Blurred-300VW, the proposed Real-world Motion Blur (RWMB) datasets and 300VW demonstrate the superior performance to the state-of-the-art methods. 
+			Datasets and models will be publicly available at https://keqiangsun.github.io/projects/FAB/FAB.html.
 	</p>
       </div>
 <div class="section downloads">
@@ -81,12 +79,12 @@ expressions, illuminations, makeups, occlusions, and blurriness.
 	  <ul>
         <li class="grid">
 	      <div class="griditem">
-		<a href="https://keqiangsun.github.io/projects/LAB/support/LAB.pdf" target="_blank" class="imageLink"><img src="paper.png"></a><br><a href="https://arxiv.org/abs/1805.10483">Paper</a>
+		<a href="https://keqiangsun.github.io/projects/FAB/support/FAB.pdf" target="_blank" class="imageLink"><img src="paper.png"></a><br><a href="https://arxiv.org/abs/1805.10483">Paper</a>
 		</div>
 	      </li>
         <li class="grid">
 	      <div class="griditem">
-		<a href="https://keqiangsun.github.io/projects/LAB/support/LAB_Supplementary_Material.pdf" target="_blank" class="imageLink"><img src="sup.png"></a><br><a href="https://keqiangsun.github.io/projects/LAB/support/LAB_Supplementary_Material.pdf">Supplementary Material</a>
+		<a href="https://keqiangsun.github.io/projects/FAB/support/LAB_Supplementary_Material.pdf" target="_blank" class="imageLink"><img src="sup.png"></a><br><a href="https://keqiangsun.github.io/projects/LAB/support/LAB_Supplementary_Material.pdf">Supplementary Material</a>
 		</div>
 	      </li>
 	    <li class="grid">
@@ -96,7 +94,7 @@ expressions, illuminations, makeups, occlusions, and blurriness.
 	      </li>
 	    <li class="grid">
 	      <div class="griditem">
-		<img src="code.png"><br><a href="https://github.com/keqiangsun/LAB" target="_blank">Code and Model</a>
+		<img src="code.png"><br><a href="https://github.com/keqiangsun/FAB" target="_blank">Code and Model</a>
 		</div>
 	      </li>
 	    </ul>
