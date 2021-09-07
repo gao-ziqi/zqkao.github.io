@@ -295,7 +295,9 @@ li ul {
 .col-3 {
 	width: 30%;
 }
-
+.col-15 {
+	width: 15%;
+}
 .col-7 {
 	width: 70%;
 }
